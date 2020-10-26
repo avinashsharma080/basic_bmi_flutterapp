@@ -269,13 +269,30 @@ class _InputPageState extends State<InputPage> {
                 BmiCalculator calc =
                     BmiCalculator(height: startHeight, weight: startWeight);
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => Resultpage(
-                              bmi: calc.getBmi(),
-                              result: calc.getresult(),
-                              interpreatation: calc.interpretation(),
-                            )));
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        Resultpage(
+                      bmi: calc.getBmi(),
+                      result: calc.getresult(),
+                      interpreatation: calc.interpretation(),
+                    ),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      var begin = Offset(1.0, 1.0);
+                      var end = Offset.zero;
+                      var curve = Curves.easeOutExpo;
+
+                      var tween = Tween(begin: begin, end: end)
+                          .chain(CurveTween(curve: curve));
+
+                      return SlideTransition(
+                        position: animation.drive(tween),
+                        child: child,
+                      );
+                    },
+                  ),
+                );
               },
             ),
           ),
